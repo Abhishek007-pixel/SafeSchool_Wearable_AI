@@ -85,8 +85,6 @@ Adaptive thresholds per child: {'hr': 95, 'hrv': 31.5}
 
 
 
-### Feature Importance
-![Feature Importance](https://github.com/Abhii9180/SafeSchool_Wearable_AI/assets/feature_importance.png)
 
 ### To Run
 ```
