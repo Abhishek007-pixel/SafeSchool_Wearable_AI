@@ -1,0 +1,158 @@
+/* PAGE SETUP */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Inter, sans-serif;
+    background: linear-gradient(135deg, #e9f1ff, #ffffff);
+}
+
+/* HEADER */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 32px;
+    background: #0a84ff;
+    color: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.tag {
+    background: rgba(255,255,255,0.25);
+    padding: 4px 8px;
+    margin-left: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.nav-items span {
+    margin-left: 18px;
+    font-weight: 500;
+}
+
+/* MAIN LAYOUT */
+.dashboard-container {
+    display: flex;
+    gap: 25px;
+    padding: 30px;
+}
+
+/* PANELS */
+.panel {
+    flex: 1;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    padding: 25px;
+}
+
+/* INPUT FORM */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #cfcfcf;
+    margin-top: 5px;
+}
+
+input:focus {
+    border-color: #0a84ff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0,122,255,0.3);
+}
+
+/* BUTTON */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #007aff;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: #005fcc;
+}
+
+/* RESULT CARD */
+.result-box {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.result-box.stress {
+    background: #ffe8e8;
+    color: #c70000;
+    border: 1px solid #ffbbbb;
+}
+
+.result-box.normal {
+    background: #e8fff1;
+    color: #008f42;
+    border: 1px solid #afffd0;
+}
+
+.prediction-text {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* RIGHT PANEL VISUAL */
+.chart-container img {
+    width: 100%;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.pipeline-steps {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step {
+    background: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.arrow {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.placeholder {
+    margin-top: 80px;
+    text-align: center;
+    color: #777;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafeSchool | Clinical AI Prototype</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #0a0e27;
+        color: #ffffff;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Animated Background Grid */
+      .grid-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(99, 102, 241, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: 0;
+        animation: gridMove 20s linear infinite;
+      }
+
+      @keyframes gridMove {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
+
+      .gradient-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+        z-index: 0;
+        animation: float 20s ease-in-out infinite;
+      }
+
+      .orb-1 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, #6366f1, transparent);
+        top: -200px;
+        left: -200px;
+      }
+
+      .orb-2 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, #8b5cf6, transparent);
+        bottom: -150px;
+        right: -150px;
+        animation-delay: -10s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(100px, -50px) scale(1.1);
+        }
+        66% {
+          transform: translate(-50px, 100px) scale(0.9);
+        }
+      }
+
+      /* Header */
+      .top-nav {
+        position: relative;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        padding: 1.2rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #ffffff;
+      }
+
+      .logo-icon {
+        font-size: 28px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        padding: 8px 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      .tag {
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #a5b4fc;
+        margin-left: 12px;
+      }
+
+      .nav-items {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #94a3b8;
+      }
+
+      .nav-items span {
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      /* Main Container */
+      .dashboard-container {
+        position: relative;
+        z-index: 1;
+        max-width: 1600px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 450px 1fr;
+        gap: 2rem;
+      }
+
+      /* Panel Base */
+      .panel {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        animation: slideIn 0.6s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Panel Headers */
+      h2 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #ffffff, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 2rem;
+        font-weight: 500;
+      }
+
+      /* Form Styling */
+      .form-group {
+        margin-bottom: 1.8rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #cbd5e1;
+        margin-bottom: 10px;
+        letter-spacing: 0.3px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 14px 18px;
+        background: rgba(30, 41, 59, 0.8);
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-family: "Inter", sans-serif;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #6366f1;
+        background: rgba(30, 41, 59, 1);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-group small {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 6px;
+        font-style: italic;
+      }
+
+      /* Button */
+      .btn-primary {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border: none;
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
+      }
+
+      .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      /* Result Box */
+      .result-box {
+        margin-top: 2rem;
+        padding: 2rem;
+        border-radius: 16px;
+        border: 2px solid;
+        animation: resultAppear 0.5s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
+
+      @keyframes resultAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .result-box::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        z-index: 0;
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .result-box > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .result-box.normal {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1),
+          rgba(5, 150, 105, 0.15)
+        );
+        border-color: #10b981;
+      }
+
+      .result-box.stress {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0.1),
+          rgba(220, 38, 38, 0.15)
+        );
+        border-color: #ef4444;
+      }
+
+      .result-box h3 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #94a3b8;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      .prediction-text {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+
+      .result-box.normal .prediction-text {
+        color: #10b981;
+      }
+
+      .result-box.stress .prediction-text {
+        color: #ef4444;
+      }
+
+      .confidence {
+        font-size: 14px;
+        font-weight: 600;
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        display: inline-block;
+      }
+
+      /* Visualization Panel */
+      .chart-container {
+        margin-top: 1.5rem;
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      .chart-container img {
+        width: 100%;
+        border-radius: 12px;
+        display: block;
+      }
+
+      /* Pipeline Explainer */
+      .pipeline-explainer {
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .step {
+        flex: 1;
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.1),
+          rgba(139, 92, 246, 0.1)
+        );
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .step:hover {
+        transform: translateY(-5px);
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.15),
+          rgba(139, 92, 246, 0.15)
+        );
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+      }
+
+      .step strong {
+        display: block;
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 8px;
+      }
+
+      .step p {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 500;
+      }
+
+      .arrow {
+        font-size: 24px;
+        color: #6366f1;
+        font-weight: 700;
+      }
+
+      /* Placeholder */
+      .placeholder {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: #64748b;
+      }
+
+      .placeholder p:first-child {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #94a3b8;
+      }
+
+      .placeholder strong {
+        color: #6366f1;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 1200px) {
+        .dashboard-container {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          padding: 1rem 1.5rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .logo {
+          font-size: 18px;
+        }
+
+        .tag {
+          display: none;
+        }
+
+        .nav-items {
+          font-size: 12px;
+          gap: 12px;
+        }
+
+        .dashboard-container {
+          padding: 0 1rem;
+          gap: 1.5rem;
+        }
+
+        .panel {
+          padding: 1.5rem;
+        }
+
+        .pipeline-explainer {
+          flex-direction: column;
+        }
+
+        .arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-background"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <!-- Header -->
+    <header class="top-nav">
+      <div class="logo">
+        <span class="logo-icon">🩺</span>
+        SafeSchool
+        <span class="tag">Clinical AI Prototype</span>
+      </div>
+      <div class="nav-items">
+        
+        <span>Ver 1.0</span>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+      <!-- LEFT COLUMN: INPUTS -->
+      <div class="panel input-panel">
+        <h2>📊 Patient Vitals</h2>
+        <p class="subtitle">Simulate real-time physiological data.</p>
+
+        <form action="/predict" method="POST">
+          <div class="form-group">
+            <label>Heart Rate (BPM)</label>
+            <input
+              type="number"
+              name="hr"
+              step="0.1"
+              value="{{ hr }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>HRV - RMSSD (ms)</label>
+            <input
+              type="number"
+              name="rmssd"
+              step="0.1"
+              value="{{ rmssd }}"
+              required
+            />
+            <small>Standard time-domain measure for Vagal Tone.</small>
+          </div>
+
+          <div class="form-group">
+            <label>GSR (Skin Conductance µS)</label>
+            <input
+              type="number"
+              name="gsr"
+              step="0.01"
+              value="{{ gsr }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Motion Variance (Accelerometer)</label>
+            <input
+              type="number"
+              name="motion"
+              step="0.01"
+              value="{{ motion }}"
+              required
+            />
+            <small>High values indicate physical activity or panic.</small>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            Run Signal Analysis Pipeline
+          </button>
+        </form>
+
+        <!-- PREDICTION RESULT BOX -->
+        {% if prediction %}
+        <div
+          class="result-box {{ 'stress' if prediction == 'Stress' else 'normal' }}"
+        >
+          <h3>Diagnosis Output</h3>
+          <div class="prediction-text">{{ prediction }}</div>
+          <div class="confidence">Signal Quality Index (SQI): Passed ✅</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT COLUMN: VISUALIZATION -->
+      <div class="panel visual-panel">
+        <h2>📈 Real-Time Signal Processing</h2>
+        <p class="subtitle">
+          Visualizing the raw data transformation pipeline.
+        </p>
+
+        {% if plot_url %}
+        <div class="chart-container">
+          <img
+            src="data:image/png;base64,{{ plot_url }}"
+            alt="Signal Processing Pipeline"
+          />
+        </div>
+        <div class="pipeline-explainer">
+          <div class="step">
+            <strong>1. Acquisition</strong>
+            <p>Raw PPG + Noise</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="step">
+            <strong>2. Preprocessing</strong>
+            <p>Butterworth Filter (0.5-5Hz)</p>
+          </div>
+          <div class="arrow">→</div>
+          <div class="step">
+            <strong>3. Feature Eng</strong>
+            <p>Peak Detection & RMSSD Calc</p>
+          </div>
+        </div>
+        {% else %}
+        <div class="placeholder">
+          <p>Waiting for input stream...</p>
+          <p>
+            Click <strong>"Run Signal Analysis"</strong> to generate clinical
+            graphs.
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>
